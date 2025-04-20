@@ -1,0 +1,78 @@
+/* Main Container */
+.home-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh; /* Ensure full viewport height */
+    background: linear-gradient(to right, #00ddeb, #0081f1); /* Gradient from the image */
+    text-align: center;
+    
+  }
+  
+  /* Welcome Bar */
+  .welcome-bar {
+    width: 100%;
+    background: white;
+    padding: 10px 20px;
+    position: fixed;
+    top: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 80px;
+    z-index: 1000;
+  }
+  
+  /* Vignan Logo */
+  .vignan-logo {
+    position: absolute;
+    left: 50px;
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+  }
+  
+  /* Welcome Message */
+  .welcome-message {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: black;
+    margin: 0;
+    white-space: nowrap;
+    text-align: center;
+  }
+  
+  /* Login Grid */
+  .login-grid {
+    display: flex;
+    gap: 20px;
+  }
+  
+  /* Individual Login Box */
+  .login-box {
+    width: 350px; /* Adjusted size */
+    height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 15px;
+    overflow: hidden;
+    background: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+  }
+  
+  /* Hover effect for the login boxes */
+  .login-box:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+  }
+  
+  /* Login Images */
+  .login-image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    cursor: pointer;
+  }

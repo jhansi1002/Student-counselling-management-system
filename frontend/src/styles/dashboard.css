@@ -1,0 +1,681 @@
+/* 
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f0f2f5;
+}
+
+.dashboard {
+  min-height: 100vh;
+  position: relative;
+}
+
+.top-bar {
+  background-color: #4CAF50;
+  color: white;
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.top-bar h2 {
+  font-size: 1.5rem;
+}
+
+.top-button {
+  background: none;
+  border: 1px solid white;
+  color: white;
+  padding: 5px 10px;
+  margin-left: 10px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.top-button:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.main-layout {
+  display: flex;
+  gap: 20px;
+  padding: 20px;
+}
+
+.main-content {
+  flex: 3;
+}
+
+.sidebar {
+  flex: 1;
+  background-color: #f4f4f4;
+  padding: 20px;
+  border-radius: 8px;
+}
+
+.sidebar h3 {
+  margin-bottom: 10px;
+}
+
+.sidebar ul {
+  list-style: none;
+}
+
+.sidebar ul li {
+  margin: 10px 0;
+}
+
+.sidebar a {
+  text-decoration: none;
+  color: #333;
+}
+
+.sidebar a:hover {
+  color: #4CAF50;
+}
+
+
+.welcome-section {
+  margin-bottom: 20px;
+}
+
+.motivational-quote {
+  font-style: italic;
+  color: #666;
+}
+
+.appointment-management {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.appointment-item {
+  border-bottom: 1px solid #ddd;
+  padding: 10px 0;
+}
+
+.action-button {
+  background: none;
+  border: 1px solid #4CAF50;
+  color: #4CAF50;
+  padding: 5px 10px;
+  margin-right: 10px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.action-button:hover {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.book-button {
+  background-color: #4CAF50;
+  color: white;
+  padding: 10px;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+  margin-top: 10px;
+}
+
+.book-button:hover {
+  background-color: #45a049;
+}
+
+.self-help-resources {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.self-help-resources ul {
+  list-style: none;
+}
+
+.self-help-resources li {
+  margin: 10px 0;
+}
+
+.self-help-resources a {
+  text-decoration: none;
+  color: #333;
+}
+
+.self-help-resources a:hover {
+  color: #4CAF50;
+}
+
+.emergency-button {
+  background-color: #FF5722;
+  color: white;
+  padding: 10px;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.emergency-button:hover {
+  background-color: #e64a19;
+}
+
+.progress-tracking {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+}
+
+.progress-bar {
+  width: 50%;
+  background-color: #ddd;
+  height: 20px;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  background-color: #4CAF50;
+  height: 100%;
+  border-radius: 10px;
+}
+
+.right-sidebar {
+  flex: 1;
+  background-color: #f4f4f4;
+  padding: 20px;
+  border-radius: 8px;
+}
+
+.contact-button {
+  background: none;
+  border: 1px solid #333;
+  color: #333;
+  padding: 5px 10px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.contact-button:hover {
+  background-color: #333;
+  color: white;
+}
+
+.footer {
+  background-color: #333;
+  color: white;
+  text-align: center;
+  padding: 10px;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+}
+
+.footer a {
+  color: white;
+  margin: 0 10px;
+  text-decoration: none;
+}
+
+.footer a:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+  .main-layout {
+    flex-direction: column;
+  }
+
+  .sidebar, .right-sidebar {
+    flex: none;
+    width: 100%;
+  }
+
+  .top-bar {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .top-button {
+    margin: 5px 0;
+  }
+} */
+
+/* General Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f0f2f5;
+}
+
+.dashboard {
+  min-height: 100vh;
+  position: relative;
+}
+
+/* Top Bar */
+.top-bar {
+  background-color: #4CAF50;
+  color: white;
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.top-bar h2 {
+  font-size: 1.5rem;
+}
+
+.top-button {
+  background: none;
+  border: 1px solid white;
+  color: white;
+  padding: 5px 10px;
+  margin-left: 10px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.top-button:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Main Layout */
+.main-layout {
+  display: flex;
+  gap: 20px;
+  padding: 20px;
+}
+
+.main-content {
+  flex: 3;
+}
+
+/* Sidebar */
+.sidebar {
+  flex: 1;
+  background-color: #f4f4f4;
+  padding: 20px;
+  border-radius: 8px;
+}
+
+.sidebar h3 {
+  margin-bottom: 10px;
+}
+
+.sidebar ul {
+  list-style: none;
+}
+
+.sidebar ul li {
+  margin: 10px 0;
+}
+
+.sidebar a {
+  text-decoration: none;
+  color: #333;
+}
+
+.sidebar a:hover {
+  color: #4CAF50;
+}
+
+/* Welcome Section */
+.welcome-section {
+  margin-bottom: 20px;
+}
+
+.motivational-quote {
+  font-style: italic;
+  color: #666;
+}
+
+/* Student Profile */
+.student-profile {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.profile-photo {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  margin-bottom: 10px;
+  object-fit: cover;
+}
+
+/* Academic Integration */
+.academic-integration {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.academic-integration ul {
+  list-style: none;
+}
+
+.academic-integration li {
+  margin: 5px 0;
+}
+
+/* Appointment Management */
+.appointment-management {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.appointment-item {
+  border-bottom: 1px solid #ddd;
+  padding: 10px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.action-button {
+  background: none;
+  border: 1px solid #4CAF50;
+  color: #4CAF50;
+  padding: 5px 10px;
+  margin-right: 10px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.action-button:hover {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.book-button {
+  background-color: #4CAF50;
+  color: white;
+  padding: 10px;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+  margin-top: 10px;
+}
+
+.book-button:hover {
+  background-color: #45a049;
+}
+
+.booking-form {
+  margin-top: 10px;
+  padding: 10px;
+  background-color: #f9f9f9;
+  border-radius: 4px;
+}
+
+/* Self-Help Resources */
+.self-help-resources {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.self-help-resources ul {
+  list-style: none;
+}
+
+.self-help-resources li {
+  margin: 10px 0;
+}
+
+.self-help-resources a {
+  text-decoration: none;
+  color: #333;
+}
+
+.self-help-resources a:hover {
+  color: #4CAF50;
+}
+
+.emergency-button {
+  background-color: #FF5722;
+  color: white;
+  padding: 10px;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.emergency-button:hover {
+  background-color: #e64a19;
+}
+
+/* Progress Tracking */
+.progress-tracking {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.progress-bar {
+  width: 50%;
+  background-color: #ddd;
+  height: 20px;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  background-color: #4CAF50;
+  height: 100%;
+  border-radius: 10px;
+  transition: width 0.3s ease-in-out;
+}
+
+/* Feedback and Surveys */
+.feedback-surveys {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.feedback-surveys button {
+  margin-right: 10px;
+}
+
+/* Notifications */
+.notifications {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+/* Gamification */
+.gamification {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+/* Right Sidebar */
+.right-sidebar {
+  flex: 1;
+  background-color: #f4f4f4;
+  padding: 20px;
+  border-radius: 8px;
+}
+
+.counselor-photo {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  margin-bottom: 10px;
+  object-fit: cover;
+}
+
+.contact-button {
+  background: none;
+  border: 1px solid #333;
+  color: #333;
+  padding: 5px 10px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.contact-button:hover {
+  background-color: #333;
+  color: white;
+}
+
+/* Footer */
+.footer {
+  background-color: #333;
+  color: white;
+  text-align: center;
+  padding: 10px;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+}
+
+.footer a {
+  color: white;
+  margin: 0 10px;
+  text-decoration: none;
+}
+
+.footer a:hover {
+  text-decoration: underline;
+}
+
+/* Dark Mode */
+.dark-mode {
+  background-color: #1a1a1a;
+  color: #ffffff;
+}
+
+.dark-mode .top-bar {
+  background-color: #2c3e50;
+}
+
+.dark-mode .sidebar,
+.dark-mode .right-sidebar {
+  background-color: #333;
+}
+
+.dark-mode .main-content > div {
+  background-color: #2c2c2c;
+}
+
+.dark-mode a,
+.dark-mode .motivational-quote {
+  color: #ccc;
+}
+
+.dark-mode .progress-bar {
+  background-color: #444;
+}
+
+.dark-mode .progress-fill {
+  background-color: #3498db;
+}
+
+.dark-mode .appointment-item {
+  border-bottom: 1px solid #555;
+}
+
+.dark-mode .action-button {
+  border-color: #3498db;
+  color: #3498db;
+}
+
+.dark-mode .action-button:hover {
+  background-color: #3498db;
+  color: white;
+}
+
+.dark-mode .book-button {
+  background-color: #3498db;
+}
+
+.dark-mode .book-button:hover {
+  background-color: #2980b9;
+}
+
+.dark-mode .emergency-button {
+  background-color: #e74c3c;
+}
+
+.dark-mode .emergency-button:hover {
+  background-color: #c0392b;
+}
+
+.dark-mode .contact-button {
+  border-color: #ccc;
+  color: #ccc;
+}
+
+.dark-mode .contact-button:hover {
+  background-color: #ccc;
+  color: #333;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .main-layout {
+    flex-direction: column;
+  }
+
+  .sidebar,
+  .right-sidebar {
+    flex: none;
+    width: 100%;
+  }
+
+  .main-content {
+    flex: none;
+    width: 100%;
+  }
+
+  .top-bar {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .top-button {
+    margin: 5px 0;
+  }
+
+  .progress-bar {
+    width: 100%;
+  }
+
+  .appointment-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .action-button {
+    margin: 5px 0;
+  }
+}
