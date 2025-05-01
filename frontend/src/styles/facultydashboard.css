@@ -1,450 +1,208 @@
-/* Reset */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
-  
-  body {
-    font-family: Arial, sans-serif;
-    background-color: #f7fafc;
-    color: #2d3748;
-  }
-  
-  /* Faculty Dashboard */
-  .faculty-dashboard {
-    display: flex;
-    height: 100vh;
-    
-  }
-  
-  /* Sidebar */
-  .sidebar {
-    width: 256px;
-    background-color:lightblue;
-    color: black;
-    padding: 16px;
-  }
-  
-  .sidebar h2 {
-    font-size: 24px;
-    font-weight: 700;
-    margin-bottom: 24px;
-  }
-  
-  .sidebar nav ul {
-    list-style: none;
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-  }
-  
-  .sidebar nav ul li {
-    padding: 8px;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-  }
-  
-  .sidebar nav ul li:hover {
-    background-color: #2c5282;
-  }
-  
-  /* Main Content */
-  .main-content {
-    flex: 1;
-    padding: 24px;
-    overflow-y: auto;
-  }
-  
-  /* Typography */
-  h1 {
-    font-size: 30px;
-    font-weight: 700;
-    margin-bottom: 16px;
-  }
-  
-  h2 {
-    font-size: 24px;
-    font-weight: 700;
-    margin-bottom: 8px;
-  }
-  
-  h3 {
-    font-size: 18px;
-    font-weight: 600;
-    margin-bottom: 8px;
-  }
-  
-  /* Stats Grid */
-  .stats-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 16px;
-    margin-bottom: 16px;
-  }
-  
-  .stat-card {
-    background-color: #ffffff;
-    padding: 16px;
-    border-radius: 8px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  }
-  
-  .stat-card p {
-    font-size: 24px;
-  }
-  
-  /* Buttons */
-  .button-group {
-    display: flex;
-    gap: 16px;
-  }
-  
-  .btn {
-    padding: 8px 16px;
-    border-radius: 4px;
-    color: #ffffff;
-    border: none;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-  }
-  
-  .btn-blue {
-    background-color: #3b82f6;
-  }
-  
-  .btn-blue:hover {
-    background-color: #2563eb;
-  }
-  
-  .btn-green {
-    background-color: #10b981;
-  }
-  
-  .btn-green:hover {
-    background-color: #059669;
-  }
-  
-  .btn-purple {
-    background-color: #8b5cf6;
-  }
-  
-  .btn-purple:hover {
-    background-color: #7c3aed;
-  }
-  
-  .btn-gray {
-    background-color: #6b7280;
-  }
-  
-  .btn-gray:hover {
-    background-color: #4b5563;
-  }
-  
-  .btn-red {
-    background-color: #ef4444;
-  }
-  
-  .btn-red:hover {
-    background-color: #dc2626;
-  }
-  
-  .btn-small {
-    padding: 4px 8px;
-    font-size: 12px;
-  }
-  
-  /* Student Table */
-  .student-table {
-    width: 100%;
-    background-color: #ffffff;
-    border-radius: 8px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  }
-  
-  .student-table thead tr {
-    background-color: #edf2f7;
-  }
-  
-  .student-table th,
-  .student-table td {
-    padding: 8px;
-    text-align: left;
-  }
-  
-  .student-table tbody tr {
-    border-top: 1px solid #e5e7eb;
-  }
-  
-  .student-link {
-    color: #3b82f6;
-    cursor: pointer;
-  }
-  
-  .student-link:hover {
-    text-decoration: underline;
-  }
-  
-  .status {
-    padding: 4px 8px;
-    border-radius: 4px;
-    color: #ffffff;
-    font-size: 12px;
-  }
-  
-  .status.on-track {
-    background-color: #10b981;
-    color:black;
-  }
-  
-  .status.at-risk {
-    background-color: #f59e0b;
-    color:black;
-  }
-  
-  .status.critical {
-    background-color: #ef4444;
-    color:black;
-  }
-  
-  .search-input {
-    width: 100%;
-    padding: 8px;
-    
-    border: 1px solid #d1d5db;
-    border-radius: 4px;
-    margin-bottom: 8px;
-  }
-  
-  /* Calendar */
-  .calendar-card {
-    background-color: #ffffff;
-    padding: 16px;
-    border-radius: 8px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  }
-  
-  .calendar-card ul {
-    list-style: none;
-  }
-  
-  .calendar-card li {
-    margin-bottom: 8px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-  
-  .calendar-card li span {
-    font-weight: 700;
-  }
-  
-  .session-notes {
-    font-size: 12px;
-    color: #6b7280;
-    margin-left: 8px;
-  }
-  
-  /* Progress Tracking */
-  .threshold-input {
-    margin-bottom: 16px;
-  }
-  
-  .threshold-input label {
-    margin-right: 8px;
-  }
-  
-  .threshold-input input {
-    width: 60px;
-    padding: 4px;
-    border: 1px solid #d1d5db;
-    border-radius: 4px;
-  }
-  
-  .progress-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 16px;
-  }
-  
-  .progress-card {
-    background-color: #ffffff;
-    padding: 16px;
-    border-radius: 8px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  }
-  
-  .chart-placeholder {
-    height: 96px;
-    background-color: #edf2f7;
-    margin-top: 8px;
-    border-radius: 4px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #6b7280;
-  }
-  
-  .alert {
-    color: #ef4444;
-    font-weight: 600;
-    margin-left: 8px;
-  }
-  
-  /* Communication */
-  .communication-card {
-    background-color: #ffffff;
-    padding: 16px;
-    border-radius: 8px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  }
-  
-  .template-select,
-  textarea {
-    width: 100%;
-    padding: 8px;
-    border: 1px solid #d1d5db;
-    border-radius: 4px;
-    margin-bottom: 8px;
-  }
-  
-  .communication-card ul {
-    list-style: none;
-    margin-top: 16px;
-  }
-  
-  /* Resource Library */
-  .resource-card {
-    background-color: #ffffff;
-    padding: 16px;
-    border-radius: 8px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  }
-  
-  .resource-card ul {
-    list-style: none;
-  }
-  
-  .resource-card li {
-    margin-bottom: 8px;
-  }
-  
-  .resource-card input[type="file"] {
-    margin-top: 8px;
-  }
-  
-  /* Analytics */
-  .analytics-card {
-    background-color: #ffffff;
-    padding: 16px;
-    border-radius: 8px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  }
-  
-  .analytics-card button {
-    margin-top: 8px;
-  }
-  
-  /* Tasks */
-  .task-card {
-    background-color: #ffffff;
-    padding: 16px;
-    border-radius: 8px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  }
-  
-  .task-card ul {
-    list-style: none;
-    margin-bottom: 16px;
-  }
-  
-  .task-card li {
-    margin-bottom: 8px;
-  }
-  
-  .priority-high {
-    color: #ef4444;
-    font-weight: 700;
-  }
-  
-  .priority-medium {
-    color: #f59e0b;
-    font-weight: 700;
-  }
-  
-  .priority-low {
-    color: #10b981;
-    font-weight: 700;
-  }
-  
-  /* Form Group */
-  .form-group {
-    display: flex;
-    gap: 8px;
-    margin-top: 16px;
-  }
-  
-  .form-group input,
-  .form-group select {
-    flex: 1;
-  }
-  
-  /* Responsive Design */
-  @media (max-width: 768px) {
-    .faculty-dashboard {
-      flex-direction: column;
-    }
-  
-    .sidebar {
-      width: 100%;
-    }
-  
-    .stats-grid,
-    .progress-grid {
-      grid-template-columns: 1fr;
-    }
-  
-    .button-group,
-    .form-group {
-      flex-direction: column;
-      gap: 8px;
-    }
-  
-    .form-group input,
-    .form-group select {
-      width: 100%;
-    }
-  }
+/* Faculty Dashboard Layout */
+.dashboard {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: #f9fafb;
+  color: #1a252f;
+  font-family: 'Open Sans', sans-serif;
+  overflow: hidden; /* Prevent double scrollbars */
+}
 
-  .add-student-form {
-    margin: 20px 0;
-    padding: 15px;
-    background: #f5f5f5;
-    border-radius: 5px;
+/* Navbar */
+.navbar {
+  background: linear-gradient(90deg, #1a252f, #263545);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+  padding: 10px 0;
+  position: fixed;
+  width: 100%;
+  z-index: 1000;
+}
+
+.navbar-brand, .nav-link {
+  color: #fff !important;
+  font-weight: 600;
+  transition: color 0.3s ease;
+}
+
+.navbar-brand:hover, .nav-link:hover {
+  color: #d4a017 !important;
+  background-color:black;
+}
+
+.faculty-info {
+  color: #fff;
+  font-size: 0.95rem;
+  margin-right: 1.5rem;
+  align-self: center;
+}
+
+/* Dashboard Content */
+.dashboard-content {
+  display: flex;
+  flex: 1;
+  padding-top: 70px; /* Account for fixed navbar */
+  height: calc(100vh - 70px); /* Full height minus navbar */
+}
+
+/* Sidebar */
+.sidebar {
+  width: 240px;
+  background-color: white;
+  padding: 1rem;
+  position: fixed;
+  height: calc(100vh - 70px); /* Full height minus navbar */
+  overflow-y: auto;
+  border-right: 2px solid #263545;
+}
+
+.sidebar .nav-link {
+  color: black;
+  background-color: blue;
+  padding: 12px 15px;
+  border-radius: 6px;
+  margin-bottom: 8px;
+  font-size: 1rem;
+}
+
+.sidebar .nav-link:hover,
+.sidebar .nav-link.active {
+  background-color: white;
+  color: black;
+  transform: translateX(5px);
+}
+
+/* Main Content */
+.main-content {
+  margin-left: 240px;
+  flex: 1;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto; /* Enable vertical scrolling */
+  height: 100%;
+}
+
+/* Sections */
+.section {
+  background: #fff;
+  padding: 25px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.06);
+  margin-bottom: 30px;
+  border: 1px solid #e9ecef;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Make tables scrollable horizontally */
+.table-responsive {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Calendar */
+.react-calendar {
+  border: none;
+  border-radius: 10px;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+  background: #fff;
+  font-size: 1rem;
+  color: black; /* Set default text color to black */
+}
+
+.react-calendar__tile {
+  padding: 10px;
+  color: black;
+  font-weight: 500; /* Bold text for readability */
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+.react-calendar__tile--active {
+  background: #d4a017 !important;
+  color: black !important; /* Keep black text on gold background */
+  font-weight: 600; /* Slightly bolder for active state */
+}
+
+.react-calendar__month-view__weekdays {
+  font-weight: 600;
+  color: black; /* Black for weekday headers */
+  text-transform: uppercase;
+  font-size: 0.9rem;
+}
+
+.react-calendar__navigation {
+  color: black; /* Month name and navigation arrows in black */
+}
+
+.react-calendar__navigation__label {
+  font-weight: 600;
+  color: black; /* Specifically target month name */
+}
+
+.react-calendar__navigation__arrow {
+  color: black; /* Navigation arrows in black */
+}
+
+/* Forms */
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+/* Responsive Design */
+@media (max-width: 992px) {
+  .sidebar {
+    width: 200px;
   }
   
-  .add-student-form .form-group {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
+  .main-content {
+    margin-left: 200px;
+  }
+}
+
+@media (max-width: 768px) {
+  .dashboard-content {
+    flex-direction: column;
   }
   
-  .add-student-form input,
-  .add-student-form select {
-    padding: 8px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-  }
-  
-  .search-section {
-    margin: 15px 0;
-  }
-  
-  .search-input {
+  .sidebar {
+    position: static;
     width: 100%;
-    max-width: 300px;
-    padding: 8px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
+    height: auto;
+    max-height: 200px;
+    border-right: none;
+    border-bottom: 2px solid #263545;
   }
+  
+  .main-content {
+    margin-left: 0;
+    padding: 15px;
+  }
+  
+  .section {
+    padding: 15px;
+  }
+  
+  .react-calendar {
+    max-width: 100%;
+  }
+}
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}

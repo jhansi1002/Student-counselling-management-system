@@ -296,6 +296,114 @@
 
 // export default Login;
 
+// import React, { useState, useEffect } from 'react';
+// import { useNavigate, useLocation } from 'react-router-dom';
+// import axios from 'axios';
+// import '../styles/login.css';
+// import vignanLogo from '../images/vignanlogo.jpg';
+
+// const Login = () => {
+//   const [username, setUsername] = useState('');
+//   const [password, setPassword] = useState('');
+//   const [error, setError] = useState('');
+//   const navigate = useNavigate();
+//   const location = useLocation();
+
+//   // Get the selected role from the navigation state
+//   const selectedRole = location.state?.role?.toLowerCase();
+
+//   // Validate the role on component mount
+//   useEffect(() => {
+//     const validRoles = ['admin', 'student', 'faculty'];
+//     if (!selectedRole || !validRoles.includes(selectedRole)) {
+//       // Redirect to homepage if role is missing or invalid
+//       navigate('/', { replace: true });
+//     }
+//   }, [selectedRole, navigate]);
+
+//   const handleLogin = async (e) => {
+//     e.preventDefault();
+
+//     // Double-check the role before sending the request
+//     const validRoles = ['admin', 'student', 'faculty'];
+//     if (!selectedRole || !validRoles.includes(selectedRole)) {
+//       setError('Please select a valid role (admin, student, or faculty)');
+//       return;
+//     }
+
+//     try {
+//       const response = await axios.post('http://localhost:5000/api/auth/login', {
+//         username,
+//         password,
+//         role: selectedRole, // Send the validated role
+//       });
+
+//       const { token, role } = response.data;
+
+//       localStorage.setItem('token', token);
+
+//       if (role === 'admin') {
+//         navigate('/admin-dashboard');
+//       } else if (role === 'faculty') {
+//         navigate('/faculty-dashboard');
+//       } else if (role === 'student') {
+//         navigate('/student-dashboard');
+//       }
+//     } catch (err) {
+//       setError(err.response?.data?.message || 'Login failed');
+//     }
+//   };
+
+//   const handleBack = () => {
+//     navigate('/');
+//   };
+
+//   // If role is invalid, the useEffect will redirect, so we can return null while redirecting
+//   if (!selectedRole) return null;
+
+//   return (
+//     <div className="login-page-container">
+//       <div className="welcome-bar">
+//         <img src={vignanLogo} alt="Vignan Logo" className="vignan-logo" />
+//         <h1 className="welcome-message">VFSTR Student Counseling Management System</h1>
+//       </div>
+//       <div className="login-container">
+//         <h2>{selectedRole.charAt(0).toUpperCase() + selectedRole.slice(1)} Login</h2>
+//         {error && <p className="error">{error}</p>}
+//         <form onSubmit={handleLogin}>
+//           <div>
+//             <label>Username:</label>
+//             <input
+//               type="text"
+//               value={username}
+//               onChange={(e) => setUsername(e.target.value)}
+//               required
+//               placeholder="Enter username (e.g., 221fa04471, john123)"
+//               title="Username can contain any characters, numbers, or special characters"
+//             />
+//           </div>
+//           <div>
+//             <label>Password:</label>
+//             <input
+//               type="password"
+//               value={password}
+//               onChange={(e) => setPassword(e.target.value)}
+//               required
+//               placeholder="Enter your password"
+//             />
+//           </div>
+//           <button type="submit">Login</button>
+//           <button type="button" onClick={handleBack}>
+//             Back to Role Selection
+//           </button>
+//         </form>
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default Login;
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
@@ -309,14 +417,11 @@ const Login = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Get the selected role from the navigation state
   const selectedRole = location.state?.role?.toLowerCase();
 
-  // Validate the role on component mount
   useEffect(() => {
     const validRoles = ['admin', 'student', 'faculty'];
     if (!selectedRole || !validRoles.includes(selectedRole)) {
-      // Redirect to homepage if role is missing or invalid
       navigate('/', { replace: true });
     }
   }, [selectedRole, navigate]);
@@ -324,23 +429,21 @@ const Login = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
 
-    // Double-check the role before sending the request
     const validRoles = ['admin', 'student', 'faculty'];
     if (!selectedRole || !validRoles.includes(selectedRole)) {
       setError('Please select a valid role (admin, student, or faculty)');
       return;
     }
 
-    try {
-      const response = await axios.post('http://localhost:5000/api/auth/login', {
-        username,
-        password,
-        role: selectedRole, // Send the validated role
-      });
+    const payload = { username, password, role: selectedRole };
+    console.log("Sending login payload:", payload); // Debug log
 
+    try {
+      const response = await axios.post('http://localhost:5000/api/auth/login', payload);
       const { token, role } = response.data;
 
       localStorage.setItem('token', token);
+      console.log("Login successful:", { token, role });
 
       if (role === 'admin') {
         navigate('/admin-dashboard');
@@ -351,6 +454,7 @@ const Login = () => {
       }
     } catch (err) {
       setError(err.response?.data?.message || 'Login failed');
+      console.error("Login error:", err.response?.data);
     }
   };
 
@@ -358,7 +462,6 @@ const Login = () => {
     navigate('/');
   };
 
-  // If role is invalid, the useEffect will redirect, so we can return null while redirecting
   if (!selectedRole) return null;
 
   return (
@@ -378,8 +481,8 @@ const Login = () => {
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               required
-              placeholder="Enter username (e.g., 221fa04471, john123)"
-              title="Username can contain any characters, numbers, or special characters"
+              placeholder="Enter username (e.g., john_doe)"
+              title="Enter your username"
             />
           </div>
           <div>

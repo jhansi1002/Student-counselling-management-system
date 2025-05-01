@@ -1,487 +1,1363 @@
 
-// import React, { useState } from 'react';
+// import { useState, useEffect } from 'react';
+// import { Navbar, Nav, Container, Dropdown, Button, Table, Form, Card, Col, Row, Spinner, Alert } from 'react-bootstrap';
+// import { Link } from 'react-router-dom';
+// import Calendar from 'react-calendar';
+// import 'react-calendar/dist/Calendar.css';
+// import axios from 'axios';
+// import jsPDF from 'jspdf';
+// import 'bootstrap/dist/css/bootstrap.min.css';
 // import '../../styles/facultydashboard.css';
 
-// const FacultyDashboard = () => {
-//   const [activeSection, setActiveSection] = useState('Dashboard');
+// function FacultyDashboard() {
+//   const [students, setStudents] = useState([]);
+//   const [sessions, setSessions] = useState([]);
+//   const [notes, setNotes] = useState({ sessionId: '', content: '', followUpDate: '' });
+//   const [resources, setResources] = useState([]);
+//   const [calendarDate, setCalendarDate] = useState(new Date());
+//   const [error, setError] = useState('');
+//   const [loading, setLoading] = useState(true);
+//   const [sessionForm, setSessionForm] = useState({ studentId: '', date: '', mode: 'offline', notes: '', sessionId: '' });
+//   const [file, setFile] = useState(null);
+//   const [defaulters, setDefaulters] = useState([]);
+//   const [activeSection, setActiveSection] = useState('dashboard-overview');
+//   const ATTENDANCE_THRESHOLD = 75; // 75% attendance
 
-//   const renderContent = () => {
-//     switch (activeSection) {
-//       case 'Dashboard':
-//         return (
-//           <section className="card">
-//             <h3 className="card-title">Welcome, Dr. John</h3>
-//             <p>Scheduled Sessions: 12 | Students Assigned: 34 | Pending Feedbacks: 3</p>
-//           </section>
-//         );
-//       case 'My Sessions':
-//         return (
-//           <section className="card">
-//             <h3 className="card-title">Upcoming Sessions</h3>
-//             <ul className="report-list">
-//               <li>March 25 - CSE Batch A - 10:00 AM</li>
-//               <li>March 27 - ECE Batch B - 02:00 PM</li>
-//               <li>March 30 - IT Batch D - 09:00 AM</li>
-//             </ul>
-//           </section>
-//         );
-//       case 'Submit Feedback':
-//         return (
-//           <section className="card">
-//             <h3 className="card-title">Feedback Submission</h3>
-//             <form className="feedback-form">
-//               <label>
-//                 Student Name:
-//                 <input type="text" placeholder="Enter name" />
-//               </label>
-//               <label>
-//                 Feedback:
-//                 <textarea placeholder="Enter feedback" rows="4"></textarea>
-//               </label>
-//               <button className="btn submit-btn">Submit</button>
-//             </form>
-//           </section>
-//         );
-//       case 'Notifications':
-//         return (
-//           <section className="card">
-//             <h3 className="card-title">Recent Notifications</h3>
-//             <ul className="report-list">
-//               <li>New counseling format shared - March 21</li>
-//               <li>Submit reports by March 25</li>
-//               <li>Faculty meeting - March 23 at 4PM</li>
-//             </ul>
-//           </section>
-//         );
-//       case 'Resources':
-//         return (
-//           <section className="card">
-//             <h3 className="card-title">Resources</h3>
-//             <p>Upload new material or download shared files:</p>
-//             <input type="file" />
-//             <ul className="report-list">
-//               <li><a href="#">Semester Guidelines.pdf</a></li>
-//               <li><a href="#">Counseling Notes.docx</a></li>
-//             </ul>
-//           </section>
-//         );
-//       case 'Performance':
-//         return (
-//           <section className="card">
-//             <h3 className="card-title">Student Performance Summary</h3>
-//             <p>Avg Attendance: 89% | Avg Score: 78%</p>
-//             <p>Top Performers: Riya, Manoj, Akash</p>
-//           </section>
-//         );
-//       case 'Session History':
-//         return (
-//           <section className="card">
-//             <h3 className="card-title">Session History</h3>
-//             <table className="session-table">
-//               <thead>
-//                 <tr>
-//                   <th>Date</th>
-//                   <th>Batch</th>
-//                   <th>Topic</th>
-//                 </tr>
-//               </thead>
-//               <tbody>
-//                 <tr>
-//                   <td>March 15</td>
-//                   <td>CSE-A</td>
-//                   <td>Goal Setting</td>
-//                 </tr>
-//                 <tr>
-//                   <td>March 10</td>
-//                   <td>ECE-B</td>
-//                   <td>Time Management</td>
-//                 </tr>
-//               </tbody>
-//             </table>
-//           </section>
-//         );
-//       case 'Student List':
-//         return (
-//           <section className="card">
-//             <h3 className="card-title">Student List</h3>
-//             <ul className="report-list">
-//               <li>Riya Sharma - CSE-A</li>
-//               <li>Manoj Kumar - ECE-B</li>
-//               <li>Akash Mehta - IT-C</li>
-//             </ul>
-//           </section>
-//         );
-//       case 'Profile':
-//         return (
-//           <section className="card">
-//             <h3 className="card-title">Faculty Profile</h3>
-//             <p><strong>Name:</strong> Dr. John Doe</p>
-//             <p><strong>Email:</strong> john.doe@univ.edu</p>
-//             <p><strong>Department:</strong> Computer Science</p>
-//           </section>
-//         );
-//       default:
-//         return null;
+//   useEffect(() => {
+//     const fetchData = async () => {
+//       try {
+//         setLoading(true);
+//         const [studentsRes, sessionsRes, resourcesRes] = await Promise.all([
+//           axios.get('/api/faculty/students'),
+//           axios.get('/api/faculty/sessions'),
+//           axios.get('/api/faculty/resources'),
+//         ]);
+//         const studentsData = studentsRes.data || [];
+//         setStudents(studentsData);
+//         setSessions(sessionsRes.data || []);
+//         setResources(resourcesRes.data || []);
+//         // Calculate defaulters
+//         const defaultersList = studentsData
+//           .filter(student => student.attendance < ATTENDANCE_THRESHOLD && student.user?.phoneNumber);
+//         setDefaulters(defaultersList);
+//         setError('');
+//       } catch (err) {
+//         setError('Failed to fetch data. Please check the backend.');
+//         console.error(err);
+//       } finally {
+//         setLoading(false);
+//       }
+//     };
+//     fetchData();
+//   }, []);
+
+//   const handleSessionInput = (e) => {
+//     setSessionForm({ ...sessionForm, [e.target.name]: e.target.value });
+//   };
+
+//   const addSession = async (e) => {
+//     e.preventDefault();
+//     try {
+//       await axios.post('/api/faculty/sessions', sessionForm);
+//       setSessionForm({ studentId: '', date: '', mode: 'offline', notes: '', sessionId: '' });
+//       const sessionsRes = await axios.get('/api/faculty/sessions');
+//       setSessions(sessionsRes.data || []);
+//     } catch (err) {
+//       setError('Failed to add session');
 //     }
 //   };
 
+//   const handleNotesInput = (e) => {
+//     setNotes({ ...notes, [e.target.name]: e.target.value });
+//   };
+
+//   const addNotes = async (e) => {
+//     e.preventDefault();
+//     try {
+//       await axios.post('/api/faculty/notes', notes);
+//       setNotes({ sessionId: '', content: '', followUpDate: '' });
+//     } catch (err) {
+//       setError('Failed to add notes');
+//     }
+//   };
+
+//   const handleFileChange = (e) => {
+//     setFile(e.target.files[0]);
+//   };
+
+//   const uploadResource = async (e) => {
+//     e.preventDefault();
+//     if (!file || !sessionForm.sessionId) {
+//       setError('Please select a file and session ID');
+//       return;
+//     }
+//     const formData = new FormData();
+//     formData.append('file', file);
+//     formData.append('sessionId', sessionForm.sessionId);
+//     try {
+//       await axios.post('/api/faculty/resources', formData, {
+//         headers: { 'Content-Type': 'multipart/form-data' },
+//       });
+//       setFile(null);
+//       setSessionForm({ ...sessionForm, sessionId: '' });
+//       const resourcesRes = await axios.get('/api/faculty/resources');
+//       setResources(resourcesRes.data || []);
+//     } catch (err) {
+//       setError('Failed to upload resource');
+//     }
+//   };
+
+//   const sendDefaulterNotifications = async () => {
+//     try {
+//       await Promise.all(
+//         defaulters.map(student =>
+//           axios.post('/api/faculty/notifications/sms', {
+//             studentId: student._id,
+//             phoneNumber: student.user.phoneNumber,
+//             message: `Dear ${student.user.name}, your attendance is below ${ATTENDANCE_THRESHOLD}%. Please attend upcoming sessions.`,
+//           })
+//         )
+//       );
+//       setError('');
+//       alert('SMS notifications sent to defaulters');
+//     } catch (err) {
+//       setError('Failed to send SMS notifications');
+//       console.error(err);
+//     }
+//   };
+
+//   const generatePDF = () => {
+//     const doc = new jsPDF();
+//     doc.text('Counselling Report', 10, 10);
+//     let yOffset = 20;
+//     sessions.forEach((session, index) => {
+//       doc.text(`Session ${index + 1}: ${session.studentId} - ${session.date} - ${session.notes || 'No notes'}`, 10, yOffset);
+//       yOffset += 10;
+//     });
+//     doc.text('Attendance Defaulters:', 10, yOffset);
+//     yOffset += 10;
+//     defaulters.forEach((student, index) => {
+//       doc.text(`Student ${index + 1}: ${student.user.name} (${student.regNo}) - ${Math.round(student.attendance)}%`, 10, yOffset);
+//       yOffset += 10;
+//     });
+//     doc.save('counselling_report.pdf');
+//   };
+
+//   const markAttendance = async (studentId, sessionId, status) => {
+//     try {
+//       await axios.post('/api/faculty/attendance', { studentId, sessionId, status });
+//       const studentsRes = await axios.get('/api/faculty/students');
+//       const studentsData = studentsRes.data || [];
+//       const updatedDefaulters = studentsData
+//         .filter(student => student.attendance < ATTENDANCE_THRESHOLD && student.user?.phoneNumber);
+//       setStudents(studentsData);
+//       setDefaulters(updatedDefaulters);
+//     } catch (err) {
+//       setError('Failed to mark attendance');
+//     }
+//   };
+
+//   const scrollToSection = (sectionId) => {
+//     setActiveSection(sectionId);
+//     const element = document.getElementById(sectionId);
+//     if (element) {
+//       element.scrollIntoView({ behavior: 'smooth' });
+//     }
+//   };
+
+//   if (loading) {
+//     return (
+//       <Container className="text-center mt-5">
+//         <Spinner animation="border" />
+//         <p>Loading...</p>
+//       </Container>
+//     );
+//   }
+
 //   return (
-//     <div className="faculty-dashboard">
-//       {/* Header */}
-//       <header className="dashboard-header">
-//         <h1 className="dashboard-title">Faculty Dashboard</h1>
-//         <div className="header-buttons">
-//           <button className="btn settings-btn">Settings</button>
-//           <button className="btn logout-btn">Logout</button>
+//     <div className="dashboard">
+//       <Navbar bg="primary" variant="dark" expand="lg">
+//         <Container>
+//           <Navbar.Brand as={Link} to="/">Counselling System</Navbar.Brand>
+//           <Navbar.Toggle aria-controls="basic-navbar-nav" />
+//           <Navbar.Collapse id="basic-navbar-nav">
+//             <Nav className="me-auto">
+//               <Nav.Link as={Link} to="/search">Search Students</Nav.Link>
+//             </Nav>
+//             <Nav>
+//               <Nav.Item className="faculty-info">Faculty: John Doe (ID: F123)</Nav.Item>
+//               <Dropdown>
+//                 <Dropdown.Toggle variant="outline-light" id="dropdown-basic">
+//                   Settings
+//                 </Dropdown.Toggle>
+//                 <Dropdown.Menu>
+//                   <Dropdown.Item href="#">Change Password</Dropdown.Item>
+//                   <Dropdown.Item href="#">Logout</Dropdown.Item>
+//                 </Dropdown.Menu>
+//               </Dropdown>
+//             </Nav>
+//           </Navbar.Collapse>
+//         </Container>
+//       </Navbar>
+
+//       <div className="dashboard-content">
+//         <div className="sidebar">
+//           <Nav className="flex-column">
+//             <Nav.Link
+//               className={activeSection === 'dashboard-overview' ? 'active' : ''}
+//               onClick={() => scrollToSection('dashboard-overview')}
+//             >
+//               Dashboard Overview
+//             </Nav.Link>
+//             <Nav.Link
+//               className={activeSection === 'my-students' ? 'active' : ''}
+//               onClick={() => scrollToSection('my-students')}
+//             >
+//               My Students
+//             </Nav.Link>
+//             <Nav.Link
+//               className={activeSection === 'attendance-defaulters' ? 'active' : ''}
+//               onClick={() => scrollToSection('attendance-defaulters')}
+//             >
+//               Attendance Defaulters
+//             </Nav.Link>
+//             <Nav.Link
+//               className={activeSection === 'counseling-sessions' ? 'active' : ''}
+//               onClick={() => scrollToSection('counseling-sessions')}
+//             >
+//               Counseling Sessions
+//             </Nav.Link>
+//             <Nav.Link
+//               className={activeSection === 'notes-reports' ? 'active' : ''}
+//               onClick={() => scrollToSection('notes-reports')}
+//             >
+//               Notes & Reports
+//             </Nav.Link>
+//             <Nav.Link
+//               className={activeSection === 'upload-resources' ? 'active' : ''}
+//               onClick={() => scrollToSection('upload-resources')}
+//             >
+//               Upload Resources
+//             </Nav.Link>
+//             <Nav.Link
+//               className={activeSection === 'attendance-tracker' ? 'active' : ''}
+//               onClick={() => scrollToSection('attendance-tracker')}
+//             >
+//               Attendance Tracker
+//             </Nav.Link>
+//             <Nav.Link
+//               className={activeSection === 'messages' ? 'active' : ''}
+//               onClick={() => scrollToSection('messages')}
+//             >
+//               Messages/Alerts
+//             </Nav.Link>
+//             <Nav.Link
+//               className={activeSection === 'settings' ? 'active' : ''}
+//               onClick={() => scrollToSection('settings')}
+//             >
+//               Settings
+//             </Nav.Link>
+//           </Nav>
 //         </div>
-//       </header>
 
-//       <div className="dashboard-container">
-//         {/* Sidebar */}
-//         <aside className="sidebar">
-//           <h2 className="sidebar-heading">Navigation</h2>
-//           <ul className="sidebar-menu">
-//             {[
-//               'Dashboard',
-//               'My Sessions',
-//               'Student List',
-//               'Submit Feedback',
-//               'Notifications',
-//               'Resources',
-//               'Performance',
-//               'Session History',
-//               'Profile'
-//             ].map((item) => (
-//               <li
-//                 key={item}
-//                 className={activeSection === item ? 'active' : ''}
-//                 onClick={() => setActiveSection(item)}
-//               >
-//                 {item}
-//               </li>
-//             ))}
-//           </ul>
-//         </aside>
+//         <div className="main-content">
+//           {error && <Alert variant="danger">{error}</Alert>}
 
-//         {/* Main Content */}
-//         <main className="dashboard-content">
-//           {renderContent()}
-//           <footer className="dashboard-footer">
-//             Faculty Guidelines | Support | Feedback
-//           </footer>
-//         </main>
+//           <div id="dashboard-overview" className="section">
+//             <h2>Dashboard Overview</h2>
+//             <Row className="mb-4">
+//               <Col md={3}>
+//                 <Card>
+//                   <Card.Body>
+//                     <Card.Title>Total Students</Card.Title>
+//                     <Card.Text>{students.length}</Card.Text>
+//                   </Card.Body>
+//                 </Card>
+//               </Col>
+//               <Col md={3}>
+//                 <Card>
+//                   <Card.Body>
+//                     <Card.Title>Upcoming Sessions</Card.Title>
+//                     <Card.Text>
+//                       {sessions.filter(s => new Date(s.date) >= new Date()).length}
+//                     </Card.Text>
+//                   </Card.Body>
+//                 </Card>
+//               </Col>
+//               <Col md={3}>
+//                 <Card>
+//                   <Card.Body>
+//                     <Card.Title>Notes Pending</Card.Title>
+//                     <Card.Text>0</Card.Text>
+//                   </Card.Body>
+//                 </Card>
+//               </Col>
+//               <Col md={3}>
+//                 <Card>
+//                   <Card.Body>
+//                     <Card.Title>Issues Raised</Card.Title>
+//                     <Card.Text>0</Card.Text>
+//                   </Card.Body>
+//                 </Card>
+//               </Col>
+//             </Row>
+//           </div>
+
+//           <div id="my-students" className="section">
+//             <h2>My Students</h2>
+//             {students.length > 0 ? (
+//               <Table striped bordered hover>
+//                 <thead>
+//                   <tr>
+//                     <th>Reg No</th>
+//                     <th>Name</th>
+//                     <th>Contact</th>
+//                     <th>Department</th>
+//                     <th>Year</th>
+//                     <th>Major</th>
+//                     <th>GPA</th>
+//                     <th>Status</th>
+//                     <th>Actions</th>
+//                   </tr>
+//                 </thead>
+//                 <tbody>
+//                   {students.map(student => (
+//                     <tr key={student._id}>
+//                       <td>{student.regNo || 'N/A'}</td>
+//                       <td>{student.user?.name || 'N/A'}</td>
+//                       <td>{student.user?.phoneNumber || 'N/A'}</td>
+//                       <td>{student.department || 'N/A'}</td>
+//                       <td>{student.year || 'N/A'}</td>
+//                       <td>{student.major || 'N/A'}</td>
+//                       <td>{student.gpa.toFixed(2)}</td>
+//                       <td>{student.status}</td>
+//                       <td>
+//                         <Button variant="info" size="sm" className="me-2">View History</Button>
+//                         <Button
+//                           variant="primary"
+//                           size="sm"
+//                           className="me-2"
+//                           onClick={() => setSessionForm({ ...sessionForm, studentId: student._id })}
+//                         >
+//                           Schedule
+//                         </Button>
+//                         <Button variant="success" size="sm">Message</Button>
+//                       </td>
+//                     </tr>
+//                   ))}
+//                 </tbody>
+//               </Table>
+//             ) : (
+//               <p>No students found.</p>
+//             )}
+//           </div>
+
+//           <div id="attendance-defaulters" className="section">
+//             <h2>Attendance Defaulters</h2>
+//             {defaulters.length > 0 ? (
+//               <>
+//                 <Table striped bordered hover>
+//                   <thead>
+//                     <tr>
+//                       <th>Reg No</th>
+//                       <th>Name</th>
+//                       <th>Contact</th>
+//                       <th>Attendance (%)</th>
+//                     </tr>
+//                   </thead>
+//                   <tbody>
+//                     {defaulters.map(student => (
+//                       <tr key={student._id}>
+//                         <td>{student.regNo}</td>
+//                         <td>{student.user?.name}</td>
+//                         <td>{student.user?.phoneNumber}</td>
+//                         <td>{Math.round(student.attendance)}</td>
+//                       </tr>
+//                     ))}
+//                   </tbody>
+//                 </Table>
+//                 <Button variant="warning" onClick={sendDefaulterNotifications}>
+//                   Send SMS to Defaulters
+//                 </Button>
+//               </>
+//             ) : (
+//               <p>No defaulters found.</p>
+//             )}
+//           </div>
+
+//           <div id="counseling-sessions" className="section">
+//             <h2>Counseling Sessions</h2>
+//             <Calendar onChange={setCalendarDate} value={calendarDate} />
+//             <Form onSubmit={addSession} className="mt-3">
+//               <Form.Group className="mb-3">
+//                 <Form.Label>Student ID</Form.Label>
+//                 <Form.Control
+//                   type="text"
+//                   name="studentId"
+//                   value={sessionForm.studentId}
+//                   onChange={handleSessionInput}
+//                   required
+//                 />
+//               </Form.Group>
+//               <Form.Group className="mb-3">
+//                 <Form.Label>Date</Form.Label>
+//                 <Form.Control
+//                   type="date"
+//                   name="date"
+//                   value={sessionForm.date}
+//                   onChange={handleSessionInput}
+//                   required
+//                 />
+//               </Form.Group>
+//               <Form.Group className="mb-3">
+//                 <Form.Label>Mode</Form.Label>
+//                 <Form.Select name="mode" value={sessionForm.mode} onChange={handleSessionInput}>
+//                   <option value="offline">Offline</option>
+//                   <option value="online">Online</option>
+//                 </Form.Select>
+//               </Form.Group>
+//               <Form.Group className="mb-3">
+//                 <Form.Label>Notes</Form.Label>
+//                 <Form.Control
+//                   as="textarea"
+//                   name="notes"
+//                   value={sessionForm.notes}
+//                   onChange={handleSessionInput}
+//                   rows={3}
+//                 />
+//               </Form.Group>
+//               <Button type="submit" variant="primary">Add Session</Button>
+//             </Form>
+//           </div>
+
+//           <div id="notes-reports" className="section">
+//             <h2>Session Notes & Reports</h2>
+//             <Form onSubmit={addNotes}>
+//               <Form.Group className="mb-3">
+//                 <Form.Label>Session ID</Form.Label>
+//                 <Form.Control
+//                   type="text"
+//                   name="sessionId"
+//                   value={notes.sessionId}
+//                   onChange={handleNotesInput}
+//                   required
+//                 />
+//               </Form.Group>
+//               <Form.Group className=".mb-3">
+//                 <Form.Label>Notes</Form.Label>
+//                 <Form.Control
+//                   as="textarea"
+//                   name="content"
+//                   value={notes.content}
+//                   onChange={handleNotesInput}
+//                   rows={4}
+//                   required
+//                 />
+//               </Form.Group>
+//               <Form.Group className="mb-3">
+//                 <Form.Label>Follow-Up Date</Form.Label>
+//                 <Form.Control
+//                   type="date"
+//                   name="followUpDate"
+//                   value={notes.followUpDate}
+//                   onChange={handleNotesInput}
+//                 />
+//               </Form.Group>
+//               <Button type="submit" variant="primary" className="me-2">Save Notes</Button>
+//               <Button variant="success" onClick={generatePDF}>Generate PDF</Button>
+//             </Form>
+//           </div>
+
+//           <div id="upload-resources" className="section">
+//             <h2>Upload Resources</h2>
+//             <Form onSubmit={uploadResource}>
+//               <Form.Group className="mb-3">
+//                 <Form.Label>Session ID</Form.Label>
+//                 <Form.Control
+//                   type="text"
+//                   name="sessionId"
+//                   value={sessionForm.sessionId}
+//                   onChange={e => setSessionForm({ ...sessionForm, sessionId: e.target.value })}
+//                   required
+//                 />
+//               </Form.Group>
+//               <Form.Group className="mb-3">
+//                 <Form.Label>Resource File</Form.Label>
+//                 <Form.Control type="file" onChange={handleFileChange} required />
+//               </Form.Group>
+//               <Button type="submit" variant="primary">Upload Resource</Button>
+//             </Form>
+//             {resources.length > 0 && (
+//               <>
+//                 <h3 className="mt-4">Uploaded Resources</h3>
+//                 <Table striped bordered hover>
+//                   <thead>
+//                     <tr>
+//                       <th>File Name</th>
+//                       <th>Session ID</th>
+//                       <th>Uploaded At</th>
+//                     </tr>
+//                   </thead>
+//                   <tbody>
+//                     {resources.map(resource => (
+//                       <tr key={resource._id}>
+//                         <td>{resource.fileName}</td>
+//                         <td>{resource.sessionId}</td>
+//                         <td>{new Date(resource.uploadedAt).toLocaleDateString()}</td>
+//                       </tr>
+//                     ))}
+//                   </tbody>
+//                 </Table>
+//               </>
+//             )}
+//           </div>
+
+//           <div id="attendance-tracker" className="section">
+//             <h2>Attendance Tracker</h2>
+//             {sessions.length > 0 ? (
+//               <Table striped bordered hover>
+//                 <thead>
+//                   <tr>
+//                     <th>Student</th>
+//                     <th>Session Date</th>
+//                     <th>Status</th>
+//                   </tr>
+//                 </thead>
+//                 <tbody>
+//                   {sessions.map(session => (
+//                     <tr key={session._id}>
+//                       <td>{session.studentId}</td>
+//                       <td>{session.date ? session.date.split('T')[0] : 'N/A'}</td>
+//                       <td>
+//                         <Button
+//                           variant="outline-primary"
+//                           size="sm"
+//                           onClick={() => markAttendance(session.studentId, session._id, 'present')}
+//                         >
+//                           Present
+//                         </Button>
+//                         <Button
+//                           variant="outline-danger"
+//                           size="sm"
+//                           onClick={() => markAttendance(session.studentId, session._id, 'absent')}
+//                         >
+//                           Absent
+//                         </Button>
+//                       </td>
+//                     </tr>
+//                   ))}
+//                 </tbody>
+//               </Table>
+//             ) : (
+//               <p>No sessions found.</p>
+//             )}
+//           </div>
+
+//           <div id="messages" className="section">
+//             <h2>Messages/Alerts</h2>
+//             <p>Placeholder for messages and alerts functionality.</p>
+//           </div>
+
+//           <div id="settings" className="section">
+//             <h2>Settings</h2>
+//             <p>Placeholder for settings functionality.</p>
+//           </div>
+//         </div>
 //       </div>
 //     </div>
 //   );
-// };
+// }
 
 // export default FacultyDashboard;
 
-import { useState } from "react";
+import { useState, useEffect } from 'react';
+import { Navbar, Nav, Container, Dropdown, Button, Table, Form, Card, Col, Row, Spinner, Alert, Modal } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
+import Calendar from 'react-calendar';
+import 'react-calendar/dist/Calendar.css';
+import axios from 'axios';
+import jsPDF from 'jspdf';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import '../../styles/facultydashboard.css';
 
 function FacultyDashboard() {
-  const [user] = useState({ name: "Dr. Smith" });
-  const [stats] = useState({ assignedStudents: 25, upcomingSessions: 3, urgentAlerts: 2 });
-  const [students, setStudents] = useState([
-    { id: 1, name: "John Doe", major: "CS", year: "Sophomore", status: "On Track", gpa: 3.5, attendance: 85, flags: [] },
-    { id: 2, name: "Jane Smith", major: "EE", year: "Junior", status: "At Risk", gpa: 2.8, attendance: 70, flags: ["Missed Assignments"] },
-    { id: 3, name: "Alex Lee", major: "Math", year: "Freshman", status: "Critical", gpa: 2.0, attendance: 60, flags: ["Disciplinary Issue"] },
-  ]);
-  const [sessions, setSessions] = useState([
-    { id: 1, date: "2025-03-25", title: "Counseling with John Doe", notes: "Discussed time management", type: "In-Person" },
-    { id: 2, date: "2025-03-26", title: "Counseling with Jane Smith", notes: "Set academic goals", type: "Virtual" },
-  ]);
-  const [tasks] = useState([
-    { id: 1, title: "Review John Doe’s progress report", priority: "High", due: "2025-03-24" },
-    { id: 2, title: "Follow up with Jane Smith", priority: "Medium", due: "2025-03-27" },
-  ]);
-  const [messages, setMessages] = useState([]);
-  const [announcements] = useState(["Study Skills Workshop this Friday"]);
-  const [resources] = useState(["Mental Health Referral Guide", "Academic Probation Policy"]);
-  const [newSession, setNewSession] = useState({ date: "", title: "", type: "In-Person" });
-  const [newMessage, setNewMessage] = useState("");
-  const [newTask, setNewTask] = useState({ title: "", priority: "Medium" });
-  const [searchQuery, setSearchQuery] = useState("");
-  const [attendanceThreshold, setAttendanceThreshold] = useState(75);
-  const [selectedTemplate, setSelectedTemplate] = useState("");
-  const [feedbacks] = useState(["Jane Smith: Can we discuss my grades?"]);
+  const [students, setStudents] = useState([]);
+  const [sessions, setSessions] = useState([]);
+  const [notes, setNotes] = useState({ sessionId: '', content: '', followUpDate: '' });
+  const [resources, setResources] = useState([]);
+  const [calendarDate, setCalendarDate] = useState(new Date());
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [sessionForm, setSessionForm] = useState({ studentId: '', date: '', mode: 'offline', notes: '', sessionId: '' });
+  const [file, setFile] = useState(null);
+  const [defaulters, setDefaulters] = useState([]);
+  const [activeSection, setActiveSection] = useState('dashboard-overview');
+  const [showModal, setShowModal] = useState(false);
+  const [modalMessage, setModalMessage] = useState('');
+  const [showHistoryModal, setShowHistoryModal] = useState(false);
+  const [selectedStudent, setSelectedStudent] = useState(null);
+  const [studentSessions, setStudentSessions] = useState([]);
+  const [messageForm, setMessageForm] = useState({ studentId: '', phoneNumber: '', message: '' });
+  const ATTENDANCE_THRESHOLD = 75; // 75% attendance
 
-  const messageTemplates = [
-    "Reminder: Counseling Session Tomorrow",
-    "Please submit your pending assignments",
-    "Follow-up on recent session",
-  ];
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        const [studentsRes, sessionsRes, resourcesRes] = await Promise.all([
+          axios.get('/api/faculty/students'),
+          axios.get('/api/faculty/sessions'),
+          axios.get('/api/faculty/resources'),
+        ]);
+        const studentsData = studentsRes.data || [];
+        setStudents(studentsData);
+        setSessions(sessionsRes.data || []);
+        setResources(resourcesRes.data || []);
+        // Calculate defaulters
+        const defaultersList = studentsData
+          .filter(student => student.attendance < ATTENDANCE_THRESHOLD && student.user?.phoneNumber);
+        setDefaulters(defaultersList);
+        setError('');
+      } catch (err) {
+        setError('Failed to fetch data. Please check the backend.');
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
 
-  const handleAddSession = () => {
-    const newId = sessions.length + 1;
-    setSessions([...sessions, { id: newId, ...newSession, notes: "" }]);
-    setNewSession({ date: "", title: "", type: "In-Person" });
+  const handleSessionInput = (e) => {
+    setSessionForm({ ...sessionForm, [e.target.name]: e.target.value });
   };
 
-  const handleRescheduleSession = (id) => {
-    const session = sessions.find(s => s.id === id);
-    setNewSession({ date: session.date, title: session.title, type: session.type });
-    setSessions(sessions.filter(s => s.id !== id));
+  const addSession = async (e) => {
+    e.preventDefault();
+    try {
+      await axios.post('/api/faculty/sessions', sessionForm);
+      setSessionForm({ studentId: '', date: '', mode: 'offline', notes: '', sessionId: '' });
+      const sessionsRes = await axios.get('/api/faculty/sessions');
+      setSessions(sessionsRes.data || []);
+      setModalMessage('Session added successfully');
+      setShowModal(true);
+      setTimeout(() => setShowModal(false), 2000);
+      setError('');
+    } catch (err) {
+      setError('Failed to add session');
+    }
   };
 
-  const handleCancelSession = (id) => {
-    setSessions(sessions.filter(s => s.id !== id));
+  const handleNotesInput = (e) => {
+    setNotes({ ...notes, [e.target.name]: e.target.value });
   };
 
-  const handleSendMessage = () => {
-    setMessages([...messages, { text: newMessage || selectedTemplate, date: new Date().toLocaleDateString() }]);
-    setNewMessage("");
-    setSelectedTemplate("");
+  const addNotes = async (e) => {
+    e.preventDefault();
+    try {
+      await axios.post('/api/faculty/notes', notes);
+      setNotes({ sessionId: '', content: '', followUpDate: '' });
+      setModalMessage('Notes saved successfully');
+      setShowModal(true);
+      setTimeout(() => setShowModal(false), 2000);
+      setError('');
+    } catch (err) {
+      setError('Failed to add notes');
+    }
   };
 
-  const handleAddTask = () => {
-    console.log("New Task:", newTask);
-    setNewTask({ title: "", priority: "Medium" });
+  const handleFileChange = (e) => {
+    setFile(e.target.files[0]);
   };
 
-  const filteredStudents = students.filter(student =>
-    student.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const uploadResource = async (e) => {
+    e.preventDefault();
+    if (!file || !sessionForm.sessionId) {
+      setError('Please select a file and session ID');
+      return;
+    }
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('sessionId', sessionForm.sessionId);
+    try {
+      await axios.post('/api/faculty/resources', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+      setFile(null);
+      setSessionForm({ ...sessionForm, sessionId: '' });
+      const resourcesRes = await axios.get('/api/faculty/resources');
+      setResources(resourcesRes.data || []);
+      setModalMessage('Resource uploaded successfully');
+      setShowModal(true);
+      setTimeout(() => setShowModal(false), 2000);
+      setError('');
+    } catch (err) {
+      setError('Failed to upload resource');
+    }
+  };
+
+  const sendDefaulterNotifications = async () => {
+    try {
+      await Promise.all(
+        defaulters.map(student =>
+          axios.post('/api/faculty/notifications/sms', {
+            studentId: student._id,
+            phoneNumber: student.user.phoneNumber,
+            message: `Dear ${student.user.name}, your attendance is below ${ATTENDANCE_THRESHOLD}%. Please attend upcoming sessions.`,
+          })
+        )
+      );
+      setModalMessage('SMS notifications sent successfully');
+      setShowModal(true);
+      setTimeout(() => setShowModal(false), 2000);
+      setError('');
+    } catch (err) {
+      setError('Failed to send SMS notifications');
+      console.error(err);
+    }
+  };
+
+  const generatePDF = () => {
+    const doc = new jsPDF();
+    doc.text('Counselling Report', 10, 10);
+    let yOffset = 20;
+    sessions.forEach((session, index) => {
+      doc.text(`Session ${index + 1}: ${session.studentId} - ${session.date} - ${session.notes || 'No notes'}`, 10, yOffset);
+      yOffset += 10;
+    });
+    doc.text('Attendance Defaulters:', 10, yOffset);
+    yOffset += 10;
+    defaulters.forEach((student, index) => {
+      doc.text(`Student ${index + 1}: ${student.user.name} (${student.regNo}) - ${Math.round(student.attendance)}%`, 10, yOffset);
+      yOffset += 10;
+    });
+    doc.save('counselling_report.pdf');
+    setModalMessage('PDF generated successfully');
+    setShowModal(true);
+    setTimeout(() => setShowModal(false), 2000);
+  };
+
+  const markAttendance = async (studentId, sessionId, status) => {
+    try {
+      await axios.post('/api/faculty/attendance', { studentId, sessionId, status });
+      const studentsRes = await axios.get('/api/faculty/students');
+      const studentsData = studentsRes.data || [];
+      const updatedDefaulters = studentsData
+        .filter(student => student.attendance < ATTENDANCE_THRESHOLD && student.user?.phoneNumber);
+      setStudents(studentsData);
+      setDefaulters(updatedDefaulters);
+      setModalMessage(`Attendance marked as ${status} successfully`);
+      setShowModal(true);
+      setTimeout(() => setShowModal(false), 2000);
+      setError('');
+    } catch (err) {
+      setError('Failed to mark attendance');
+    }
+  };
+
+  const scrollToSection = (sectionId) => {
+    setActiveSection(sectionId);
+    const element = document.getElementById(sectionId);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+  const viewStudentHistory = (student) => {
+    setSelectedStudent(student);
+    // Filter sessions for the selected student
+    const filteredSessions = sessions.filter(session => session.studentId === student._id);
+    setStudentSessions(filteredSessions);
+    setShowHistoryModal(true);
+  };
+
+  const handleMessageInput = (e) => {
+    setMessageForm({ ...messageForm, [e.target.name]: e.target.value });
+  };
+
+  const sendMessage = async (e) => {
+    e.preventDefault();
+    try {
+      await axios.post('/api/faculty/notifications/sms', messageForm);
+      setMessageForm({ studentId: '', phoneNumber: '', message: '' });
+      setModalMessage('SMS sent successfully');
+      setShowModal(true);
+      setTimeout(() => setShowModal(false), 2000);
+      setError('');
+    } catch (err) {
+      setError('Failed to send SMS');
+      console.error(err);
+    }
+  };
+
+  if (loading) {
+    return (
+      <Container className="text-center mt-5">
+        <Spinner animation="border" />
+        <p>Loading...</p>
+      </Container>
+    );
+  }
 
   return (
-    <div className="faculty-dashboard">
-      <div className="sidebar">
-        <h2>Faculty Dashboard</h2>
-        <nav>
-          <ul>
-            <li>Home</li>
-            <li>Students</li>
-            <li>Calendar</li>
-          </ul>
-        </nav>
-      </div>
+    <div className="dashboard">
+      <Navbar bg="primary" variant="dark" expand="lg">
+        <Container>
+          <Navbar.Brand as={Link} to="/">Counselling System</Navbar.Brand>
+          <Navbar.Toggle aria-controls="basic-navbar-nav" />
+          <Navbar.Collapse id="basic-navbar-nav">
+            <Nav className="me-auto">
+              <Nav.Link as={Link} to="/search">Search Students</Nav.Link>
+            </Nav>
+            <Nav>
+              <Nav.Item className="faculty-info">Faculty: John Doe (ID: F123)</Nav.Item>
+              <Dropdown>
+                <Dropdown.Toggle variant="outline-light" id="dropdown-basic">
+                  Settings
+                </Dropdown.Toggle>
+                <Dropdown.Menu>
+                  <Dropdown.Item href="#">Change Password</Dropdown.Item>
+                  <Nav.Link as={Link} to="/login">Logout</Nav.Link>
+                </Dropdown.Menu>
+              </Dropdown>
+            </Nav>
+          </Navbar.Collapse>
+        </Container>
+      </Navbar>
 
-      <div className="main-content">
-        {/* 1. Counselor Dashboard Home */}
-        <section>
-          <h1>Welcome, {user.name}</h1>
-          <p>You have {stats.upcomingSessions} counseling sessions scheduled today.</p>
-          <div className="stats-grid">
-            <div className="stat-card">
-              <h3>Assigned Students</h3>
-              <p>{stats.assignedStudents}</p>
-            </div>
-            <div className="stat-card">
-              <h3>Upcoming Sessions</h3>
-              <p>{stats.upcomingSessions}</p>
-            </div>
-            <div className="stat-card">
-              <h3>Urgent Alerts</h3>
-              <p>{stats.urgentAlerts}</p>
-            </div>
-          </div>
-          <div className="button-group">
-            <button className="btn btn-blue">Schedule a Session</button>
-            <button className="btn btn-green">Send Message</button>
-            <button className="btn btn-purple">View Student List</button>
-          </div>
-        </section>
+      <Modal show={showModal} onHide={() => setShowModal(false)} centered>
+        <Modal.Body className="text-center">{modalMessage}</Modal.Body>
+      </Modal>
 
-        {/* 2. Student Overview Panel */}
-        <section>
-          <h2>Assigned Students</h2>
-          <input
-            type="text"
-            placeholder="Search students..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="search-input"
-          />
-          <table className="student-table">
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Major</th>
-                <th>Year</th>
-                <th>Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredStudents.map((student) => (
-                <tr key={student.id}>
-                  <td>{student.id}</td>
-                  <td><span className="student-link">{student.name}</span></td>
-                  <td>{student.major}</td>
-                  <td>{student.year}</td>
-                  <td>
-                    <span className={`status ${student.status.toLowerCase().replace(" ", "-")}`}>
-                      {student.status}
-                    </span>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </section>
+      <Modal show={showHistoryModal} onHide={() => setShowHistoryModal(false)} centered size="lg">
+        <Modal.Header closeButton>
+          <Modal.Title>Student History: {selectedStudent?.user?.name}</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {selectedStudent && (
+            <>
+              <h5>Student Details</h5>
+              <Table striped bordered>
+                <tbody>
+                  <tr>
+                    <td><strong>Registration No</strong></td>
+                    <td>{selectedStudent.regNo || 'N/A'}</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Name</strong></td>
+                    <td>{selectedStudent.user?.name || 'N/A'}</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Contact</strong></td>
+                    <td>{selectedStudent.user?.phoneNumber || 'N/A'}</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Department</strong></td>
+                    <td>{selectedStudent.department || 'N/A'}</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Year</strong></td>
+                    <td>{selectedStudent.year || 'N/A'}</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Major</strong></td>
+                    <td>{selectedStudent.major || 'N/A'}</td>
+                  </tr>
+                  <tr>
+                    <td><strong>GPA</strong></td>
+                    <td>{selectedStudent.gpa.toFixed(2)}</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Attendance</strong></td>
+                    <td>{Math.round(selectedStudent.attendance)}%</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Status</strong></td>
+                    <td>{selectedStudent.status}</td>
+                  </tr>
+                </tbody>
+              </Table>
 
-        {/* 3. Counseling Session Management */}
-        <section>
-          <h2>Calendar</h2>
-          <div className="calendar-card">
-            <h3>Upcoming Sessions</h3>
-            <ul>
-              {sessions.map((session) => (
-                <li key={session.id}>
-                  <span>{session.date}</span>: {session.title} ({session.type})
-                  <div className="session-notes">{session.notes}</div>
-                  <button className="btn btn-small btn-blue" onClick={() => handleRescheduleSession(session.id)}>Reschedule</button>
-                  <button className="btn btn-small btn-red" onClick={() => handleCancelSession(session.id)}>Cancel</button>
-                </li>
-              ))}
-            </ul>
-            <div className="form-group">
-              <input
-                type="date"
-                value={newSession.date}
-                onChange={(e) => setNewSession({ ...newSession, date: e.target.value })}
-              />
-              <input
-                type="text"
-                value={newSession.title}
-                onChange={(e) => setNewSession({ ...newSession, title: e.target.value })}
-                placeholder="Session Title"
-              />
-              <select
-                value={newSession.type}
-                onChange={(e) => setNewSession({ ...newSession, type: e.target.value })}
-              >
-                <option value="In-Person">In-Person</option>
-                <option value="Virtual">Virtual</option>
-              </select>
-              <button className="btn btn-blue" onClick={handleAddSession}>Add Session</button>
-            </div>
-          </div>
-        </section>
+              <h5>Counseling Sessions</h5>
+              {studentSessions.length > 0 ? (
+                <Table striped bordered>
+                  <thead>
+                    <tr>
+                      <th>Date</th>
+                      <th>Mode</th>
+                      <th>Notes</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {studentSessions.map(session => (
+                      <tr key={session._id}>
+                        <td>{session.date ? session.date.split('T')[0] : 'N/A'}</td>
+                        <td>{session.mode || 'N/A'}</td>
+                        <td>{session.notes || 'No notes'}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </Table>
+              ) : (
+                <p>No counseling sessions found.</p>
+              )}
 
-        {/* 4. Student Progress Tracking */}
-        <section>
-          <h2>Student Progress</h2>
-          <div className="threshold-input">
-            <label>Attendance Threshold (%): </label>
-            <input
-              type="number"
-              value={attendanceThreshold}
-              onChange={(e) => setAttendanceThreshold(e.target.value)}
-              min="0"
-              max="100"
-            />
-          </div>
-          <div className="progress-grid">
-            {students.map((student) => (
-              <div key={student.id} className="progress-card">
-                <h3>{student.name}</h3>
-                <p>GPA: {student.gpa}</p>
-                <p>Attendance: {student.attendance}% {student.attendance < attendanceThreshold && <span className="alert">Low</span>}</p>
-                <p>Flags: {student.flags.length ? student.flags.join(", ") : "None"}</p>
-                <div className="chart-placeholder">Chart Placeholder</div>
-              </div>
-            ))}
-          </div>
-        </section>
+              <h5>Session Notes</h5>
+              {selectedStudent.sessionNotes?.length > 0 ? (
+                <Table striped bordered>
+                  <thead>
+                    <tr>
+                      <th>Date</th>
+                      <th>Content</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {selectedStudent.sessionNotes.map((note, index) => (
+                      <tr key={index}>
+                        <td>{note.date ? new Date(note.date).toLocaleDateString() : 'N/A'}</td>
+                        <td>{note.content || 'N/A'}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </Table>
+              ) : (
+                <p>No session notes found.</p>
+              )}
+            </>
+          )}
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowHistoryModal(false)}>
+            Close
+          </Button>
+        </Modal.Footer>
+      </Modal>
 
-        {/* 5. Communication Tools */}
-        <section>
-          <h2>Communication</h2>
-          <div className="communication-card">
-            <h3>Send Message</h3>
-            <select
-              value={selectedTemplate}
-              onChange={(e) => setNewMessage(e.target.value)}
-              className="template-select"
+      <div className="dashboard-content">
+        <div className="sidebar">
+          <Nav className="flex-column">
+            <Nav.Link
+              className={activeSection === 'dashboard-overview' ? 'active' : ''}
+              onClick={() => scrollToSection('dashboard-overview')}
             >
-              <option value="">Select a template</option>
-              {messageTemplates.map((template, index) => (
-                <option key={index} value={template}>{template}</option>
-              ))}
-            </select>
-            <textarea
-              value={newMessage}
-              onChange={(e) => setNewMessage(e.target.value)}
-              placeholder="Type your message..."
-            />
-            <button className="btn btn-green" onClick={handleSendMessage}>Send</button>
-            <h3>Announcements</h3>
-            <ul>
-              {announcements.map((announcement, index) => (
-                <li key={index}>{announcement}</li>
-              ))}
-            </ul>
-            <h3>Student Feedback</h3>
-            <ul>
-              {feedbacks.map((feedback, index) => (
-                <li key={index}>{feedback}</li>
-              ))}
-            </ul>
-          </div>
-        </section>
+              Dashboard Overview
+            </Nav.Link>
+            <Nav.Link
+              className={activeSection === 'my-students' ? 'active' : ''}
+              onClick={() => scrollToSection('my-students')}
+            >
+              My Students
+            </Nav.Link>
+            <Nav.Link
+              className={activeSection === 'attendance-defaulters' ? 'active' : ''}
+              onClick={() => scrollToSection('attendance-defaulters')}
+            >
+              Attendance Defaulters
+            </Nav.Link>
+            <Nav.Link
+              className={activeSection === 'counseling-sessions' ? 'active' : ''}
+              onClick={() => scrollToSection('counseling-sessions')}
+            >
+              Counseling Sessions
+            </Nav.Link>
+            <Nav.Link
+              className={activeSection === 'notes-reports' ? 'active' : ''}
+              onClick={() => scrollToSection('notes-reports')}
+            >
+              Notes & Reports
+            </Nav.Link>
+            <Nav.Link
+              className={activeSection === 'upload-resources' ? 'active' : ''}
+              onClick={() => scrollToSection('upload-resources')}
+            >
+              Upload Resources
+            </Nav.Link>
+            <Nav.Link
+              className={activeSection === 'attendance-tracker' ? 'active' : ''}
+              onClick={() => scrollToSection('attendance-tracker')}
+            >
+              Attendance Tracker
+            </Nav.Link>
+            <Nav.Link
+              className={activeSection === 'messages' ? 'active' : ''}
+              onClick={() => scrollToSection('messages')}
+            >
+              Messages/Alerts
+            </Nav.Link>
+            <Nav.Link
+              className={activeSection === 'settings' ? 'active' : ''}
+              onClick={() => scrollToSection('settings')}
+            >
+              Settings
+            </Nav.Link>
+          </Nav>
+        </div>
 
-        {/* 6. Resource Library */}
-        <section>
-          <h2>Resource Library</h2>
-          <div className="resource-card">
-            <ul>
-              {resources.map((resource, index) => (
-                <li key={index}>{resource}</li>
-              ))}
-            </ul>
-            <input type="file" />
-          </div>
-        </section>
+        <div className="main-content">
+          {error && <Alert variant="danger">{error}</Alert>}
 
-        {/* 7. Analytics and Insights */}
-        <section>
-          <h2>Analytics</h2>
-          <div className="analytics-card">
-            <p>80% of students improved grades after counseling.</p>
-            <button className="btn btn-gray">Download At-Risk Report</button>
+          <div id="dashboard-overview" className="section">
+            <h2>Dashboard Overview</h2>
+            <Row className="mb-4">
+              <Col md={3}>
+                <Card>
+                  <Card.Body>
+                    <Card.Title>Total Students</Card.Title>
+                    <Card.Text>{students.length}</Card.Text>
+                  </Card.Body>
+                </Card>
+              </Col>
+              <Col md={3}>
+                <Card>
+                  <Card.Body>
+                    <Card.Title>Upcoming Sessions</Card.Title>
+                    <Card.Text>
+                      {sessions.filter(s => new Date(s.date) >= new Date()).length}
+                    </Card.Text>
+                  </Card.Body>
+                </Card>
+              </Col>
+              <Col md={3}>
+                <Card>
+                  <Card.Body>
+                    <Card.Title>Notes Pending</Card.Title>
+                    <Card.Text>0</Card.Text>
+                  </Card.Body>
+                </Card>
+              </Col>
+              <Col md={3}>
+                <Card>
+                  <Card.Body>
+                    <Card.Title>Issues Raised</Card.Title>
+                    <Card.Text>0</Card.Text>
+                  </Card.Body>
+                </Card>
+              </Col>
+            </Row>
           </div>
-        </section>
 
-        {/* 8. Task Management */}
-        <section>
-          <h2>Tasks</h2>
-          <div className="task-card">
-            <ul>
-              {tasks.map((task) => (
-                <li key={task.id}>
-                  <span className={`priority-${task.priority.toLowerCase()}`}>{task.priority}</span> - {task.title} (Due: {task.due})
-                </li>
-              ))}
-            </ul>
-            <div className="form-group">
-              <input
-                type="text"
-                value={newTask.title}
-                onChange={(e) => setNewTask({ ...newTask, title: e.target.value })}
-                placeholder="New Task"
-              />
-              <select
-                value={newTask.priority}
-                onChange={(e) => setNewTask({ ...newTask, priority: e.target.value })}
-              >
-                <option value="Low">Low</option>
-                <option value="Medium">Medium</option>
-                <option value="High">High</option>
-              </select>
-              <button className="btn btn-blue" onClick={handleAddTask}>Add Task</button>
-            </div>
+          <div id="my-students" className="section">
+            <h2>My Students</h2>
+            {students.length > 0 ? (
+              <Table striped bordered hover>
+                <thead>
+                  <tr>
+                    <th>Reg No</th>
+                    <th>Name</th>
+                    <th>Contact</th>
+                    <th>Department</th>
+                    <th>Year</th>
+                    <th>Major</th>
+                    <th>GPA</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {students.map(student => (
+                    <tr key={student._id}>
+                      <td>{student.regNo || 'N/A'}</td>
+                      <td>{student.user?.name || 'N/A'}</td>
+                      <td>{student.user?.phoneNumber || 'N/A'}</td>
+                      <td>{student.department || 'N/A'}</td>
+                      <td>{student.year || 'N/A'}</td>
+                      <td>{student.major || 'N/A'}</td>
+                      <td>{student.gpa.toFixed(2)}</td>
+                      <td>{student.status}</td>
+                      <td>
+                        <Button
+                          variant="info"
+                          size="sm"
+                          className="me-2"
+                          onClick={() => viewStudentHistory(student)}
+                        >
+                          View History
+                        </Button>
+                        <Button
+                          variant="primary"
+                          size="sm"
+                          className="me-2"
+                          onClick={() => {
+                            setSessionForm({ ...sessionForm, studentId: student._id });
+                            scrollToSection('counseling-sessions');
+                          }}
+                        >
+                          Schedule
+                        </Button>
+                        <Button
+                          variant="success"
+                          size="sm"
+                          onClick={() => {
+                            setMessageForm({
+                              studentId: student._id,
+                              phoneNumber: student.user?.phoneNumber || '',
+                              message: '',
+                            });
+                            scrollToSection('messages');
+                          }}
+                        >
+                          Message
+                        </Button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </Table>
+            ) : (
+              <p>No students found.</p>
+            )}
           </div>
-        </section>
+
+          <div id="attendance-defaulters" className="section">
+            <h2>Attendance Defaulters</h2>
+            {defaulters.length > 0 ? (
+              <>
+                <Table striped bordered hover>
+                  <thead>
+                    <tr>
+                      <th>Reg No</th>
+                      <th>Name</th>
+                      <th>Contact</th>
+                      <th>Attendance (%)</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {defaulters.map(student => (
+                      <tr key={student._id}>
+                        <td>{student.regNo}</td>
+                        <td>{student.user?.name}</td>
+                        <td>{student.user?.phoneNumber}</td>
+                        <td>{Math.round(student.attendance)}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </Table>
+                <Button variant="warning" onClick={sendDefaulterNotifications}>
+                  Send SMS to Defaulters
+                </Button>
+              </>
+            ) : (
+              <p>No defaulters found.</p>
+            )}
+          </div>
+
+          <div id="counseling-sessions" className="section">
+            <h2>Counseling Sessions</h2>
+            <Calendar onChange={setCalendarDate} value={calendarDate} />
+            <Form onSubmit={addSession} className="mt-3">
+              <Form.Group className="mb-3">
+                <Form.Label>Student ID</Form.Label>
+                <Form.Control
+                  type="text"
+                  name="studentId"
+                  value={sessionForm.studentId}
+                  onChange={handleSessionInput}
+                  required
+                />
+              </Form.Group>
+              <Form.Group className="mb-3">
+                <Form.Label>Date</Form.Label>
+                <Form.Control
+                  type="date"
+                  name="date"
+                  value={sessionForm.date}
+                  onChange={handleSessionInput}
+                  required
+                />
+              </Form.Group>
+              <Form.Group className="mb-3">
+                <Form.Label>Mode</Form.Label>
+                <Form.Select name="mode" value={sessionForm.mode} onChange={handleSessionInput}>
+                  <option value="offline">Offline</option>
+                  <option value="online">Online</option>
+                </Form.Select>
+              </Form.Group>
+              <Form.Group className="mb-3">
+                <Form.Label>Notes</Form.Label>
+                <Form.Control
+                  as="textarea"
+                  name="notes"
+                  value={sessionForm.notes}
+                  onChange={handleSessionInput}
+                  rows={3}
+                />
+              </Form.Group>
+              <Button type="submit" variant="primary">Add Session</Button>
+            </Form>
+          </div>
+
+          <div id="notes-reports" className="section">
+            <h2>Session Notes & Reports</h2>
+            <Form onSubmit={addNotes}>
+              <Form.Group className="mb-3">
+                <Form.Label>Session ID</Form.Label>
+                <Form.Control
+                  type="text"
+                  name="sessionId"
+                  value={notes.sessionId}
+                  onChange={handleNotesInput}
+                  required
+                />
+              </Form.Group>
+              <Form.Group className="mb-3">
+                <Form.Label>Notes</Form.Label>
+                <Form.Control
+                  as="textarea"
+                  name="content"
+                  value={notes.content}
+                  onChange={handleNotesInput}
+                  rows={4}
+                  required
+                />
+              </Form.Group>
+              <Form.Group className="mb-3">
+                <Form.Label>Follow-Up Date</Form.Label>
+                <Form.Control
+                  type="date"
+                  name="followUpDate"
+                  value={notes.followUpDate}
+                  onChange={handleNotesInput}
+                />
+              </Form.Group>
+              <Button type="submit" variant="primary" className="me-2">Save Notes</Button>
+              <Button variant="success" onClick={generatePDF}>Generate PDF</Button>
+            </Form>
+          </div>
+
+          <div id="upload-resources" className="section">
+            <h2>Upload Resources</h2>
+            <Form onSubmit={uploadResource}>
+              <Form.Group className="mb-3">
+                <Form.Label>Session ID</Form.Label>
+                <Form.Control
+                  type="text"
+                  name="sessionId"
+                  value={sessionForm.sessionId}
+                  onChange={e => setSessionForm({ ...sessionForm, sessionId: e.target.value })}
+                  required
+                />
+              </Form.Group>
+              <Form.Group className="mb-3">
+                <Form.Label>Resource File</Form.Label>
+                <Form.Control type="file" onChange={handleFileChange} required />
+              </Form.Group>
+              <Button type="submit" variant="primary">Upload Resource</Button>
+            </Form>
+            {resources.length > 0 && (
+              <>
+                <h3 className="mt-4">Uploaded Resources</h3>
+                <Table striped bordered hover>
+                  <thead>
+                    <tr>
+                      <th>File Name</th>
+                      <th>Session ID</th>
+                      <th>Uploaded At</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {resources.map(resource => (
+                      <tr key={resource._id}>
+                        <td>{resource.fileName}</td>
+                        <td>{resource.sessionId}</td>
+                        <td>{new Date(resource.uploadedAt).toLocaleDateString()}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </Table>
+              </>
+            )}
+          </div>
+
+          <div id="attendance-tracker" className="section">
+            <h2>Attendance Tracker</h2>
+            {sessions.length > 0 ? (
+              <Table striped bordered hover>
+                <thead>
+                  <tr>
+                    <th>Student</th>
+                    <th>Session Date</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {sessions.map(session => (
+                    <tr key={session._id}>
+                      <td>{session.studentId}</td>
+                      <td>{session.date ? session.date.split('T')[0] : 'N/A'}</td>
+                      <td>
+                        <Button
+                          variant="outline-primary"
+                          size="sm"
+                          onClick={() => markAttendance(session.studentId, session._id, 'present')}
+                        >
+                          Present
+                        </Button>
+                        <Button
+                          variant="outline-danger"
+                          size="sm"
+                          onClick={() => markAttendance(session.studentId, session._id, 'absent')}
+                        >
+                          Absent
+                        </Button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </Table>
+            ) : (
+              <p>No sessions found.</p>
+            )}
+          </div>
+
+          <div id="messages" className="section">
+            <h2>Messages/Alerts</h2>
+            <Form onSubmit={sendMessage}>
+              <Form.Group className="mb-3">
+                <Form.Label>Student ID</Form.Label>
+                <Form.Control
+                  type="text"
+                  name="studentId"
+                  value={messageForm.studentId}
+                  onChange={handleMessageInput}
+                  required
+                />
+              </Form.Group>
+              <Form.Group className="mb-3">
+                <Form.Label>Phone Number</Form.Label>
+                <Form.Control
+                  type="text"
+                  name="phoneNumber"
+                  value={messageForm.phoneNumber}
+                  onChange={handleMessageInput}
+                  required
+                />
+              </Form.Group>
+              <Form.Group className="mb-3">
+                <Form.Label>Message</Form.Label>
+                <Form.Control
+                  as="textarea"
+                  name="message"
+                  value={messageForm.message}
+                  onChange={handleMessageInput}
+                  rows={4}
+                  required
+                />
+              </Form.Group>
+              <Button type="submit" variant="primary">Send SMS</Button>
+            </Form>
+          </div>
+
+          <div id="settings" className="section">
+            <h2>Settings</h2>
+            <p>Placeholder for settings functionality.</p>
+          </div>
+        </div>
       </div>
     </div>
   );
 }
 
 export default FacultyDashboard;
-
-
 
 
 

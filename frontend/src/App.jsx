@@ -30,6 +30,8 @@ import Login from './components/Login';
 import AdminDashboard from './components/Dashboard/AdminDashboard';
 import FacultyDashboard from './components/Dashboard/FacultyDashboard';
 import StudentDashboard from './components/Dashboard/StudentDashboard';
+import StudentSearch from "./pages/StudentSearch";
+import StudentProfile from "./pages/StudentProfile";
 import Home from './pages/Home';
 import './App.css';
 
@@ -57,6 +59,8 @@ function App() {
           path="/student-dashboard"
           element={<ProtectedRoute element={<StudentDashboard />} />}
         />
+        <Route path="/search" element={<StudentSearch />} />
+        <Route path="/student-profile/:regdNo" element={<StudentProfile />} />
       </Routes>
     </Router>
   );

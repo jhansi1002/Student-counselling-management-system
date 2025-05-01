@@ -1,0 +1,32 @@
+### Register Student
+POST http://localhost:5000/api/auth/register
+Content-Type: application/json
+
+{
+  "name": "Jhansi",
+  "identifier": "221fa04471",
+  "password": "221fa04471",
+  "role": "student"
+}
+
+### Register Faculty
+POST http://localhost:5000/api/auth/register
+Content-Type: application/json
+
+{
+  "name": "Mrs.Bhargavi",
+  "identifier": "FAC001",
+  "password": "faculty123",
+  "role": "faculty"
+}
+
+### Register Admin
+POST http://localhost:5000/api/auth/register
+Content-Type: application/json
+
+{
+  "name": "Admin User",
+  "identifier": "ADM001",
+  "password": "admin123",
+  "role": "admin"
+}
